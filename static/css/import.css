@@ -1,0 +1,516 @@
+/* ==========================================================
+   IMPORT PAGE
+========================================================== */
+
+.import-page {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.import-container{
+
+    width:100%;
+
+    max-width:980px;
+
+    margin:0 auto;
+
+}
+
+/* ==========================================================
+   HERO
+========================================================== */
+
+.hero{
+
+    background:#fff;
+
+    border:1px solid var(--border);
+
+    border-radius:22px;
+
+    padding:32px 36px;
+
+    box-shadow:var(--shadow-xs);
+
+    margin-bottom:8px;
+
+}
+
+.hero::before,
+.hero::after{
+    display:none;
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+}
+
+.hero .badge{
+
+    display:inline-block;
+
+    padding:8px 16px;
+
+    background:#EEF4FF;
+
+    color:#2563EB;
+
+    border-radius:999px;
+
+    font-weight:600;
+
+}
+
+.hero .page-title{
+    color:var(--text);
+}
+
+.hero .page-subtitle{
+    color:var(--text-secondary);
+    line-height:1.7;
+    max-width:700px;
+}
+
+.page-title{
+
+    margin-top:18px;
+
+    font-size:2.4rem;
+
+    font-weight:700;
+
+    color:#111827;
+
+}
+
+.page-subtitle{
+
+    margin-top:16px;
+
+    color:#6B7280;
+
+    max-width:720px;
+
+    line-height:1.8;
+
+    font-size:16px;
+
+}
+
+/* ==========================================================
+   CARDS
+========================================================== */
+
+.upload-card{
+
+    background:#fff;
+
+    border:1px solid var(--border);
+
+    border-radius:24px;
+
+    padding:40px;
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+.upload-card:hover{
+
+    box-shadow:var(--shadow-lg);
+
+}
+
+
+/* ==========================================================
+   DROP ZONE
+========================================================== */
+
+.drop-zone{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    min-height:420px;
+
+    padding:40px;
+
+    background:#FFFFFF;
+
+    border:2px dashed #D5DCE6;
+
+    border-radius:24px;
+
+    transition:.25s;
+
+    cursor:pointer;
+
+}
+.drop-zone:hover{
+
+    border-color:#1A2E4D;
+
+    background:#FCFCFD;
+
+    transform:translateY(-2px);
+
+    box-shadow:0 8px 25px rgba(26,46,77,.08);
+
+}
+
+.drop-zone.dragover{
+
+    border-color:#1A2E4D;
+
+    background:#F8FAFC;
+
+}
+
+.drop-zone input{
+    display:none;
+}
+
+.drop-icon{
+
+    width:110px;
+
+    height:110px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    border-radius:24px;
+
+    background:#F5F7FA;
+
+    border:1px solid #E5E7EB;
+
+    color:#1A2E4D;
+
+    font-size:48px;
+
+    margin-bottom:30px;
+
+}
+
+.drop-zone h3{
+
+    font-size:2rem;
+
+    font-weight:700;
+
+    color:#1A2E4D;
+
+    margin-bottom:14px;
+
+}
+
+.drop-zone p{
+
+    font-size:1.3rem;
+
+    color:#6B7280;
+
+    margin-bottom:14px;
+
+}
+
+.drop-zone small{
+
+    color:#9CA3AF;
+
+    font-size:1rem;
+
+}
+
+/* ==========================================================
+   FORM
+========================================================== */
+
+.form-label{
+    display:block;
+    font-weight:600;
+    margin-bottom:.5rem;
+}
+
+.form-control{
+    width:100%;
+    padding:.9rem 1rem;
+    border:1px solid #d1d5db;
+    border-radius:12px;
+    font-size:1rem;
+    transition:.3s;
+}
+
+.form-control:focus{
+    outline:none;
+    border-color:#2563eb;
+    box-shadow:0 0 0 4px rgba(37,99,235,.15);
+}
+
+.mt-4{
+    margin-top:1.5rem;
+}
+
+/* ==========================================================
+   BUTTON
+========================================================== */
+.btn-primary{
+
+    width:100%;
+
+    height:56px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:#1A2E4D;
+
+    color:white;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+.btn-primary:hover{
+
+    background:#243C60;
+
+    transform:translateY(-2px);
+
+}
+/* ==========================================================
+   FILE PREVIEW
+========================================================== */
+
+.file-preview{
+
+    margin-top:2rem;
+
+    padding:1.5rem;
+
+    background:var(--surface-2);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+}
+
+.file-preview h4{
+    margin:0 0 1rem;
+    font-size:1.1rem;
+    font-weight:600;
+}
+
+.preview-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:.75rem 0;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.preview-row:last-child{
+    border-bottom:none;
+}
+
+.preview-row span:first-child{
+    color:#6b7280;
+}
+
+.preview-row strong{
+    color:#111827;
+    font-weight:600;
+}
+
+/* ==========================================================
+   IMPORT RESULT
+========================================================== */
+.report-preview{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+
+    margin-top:20px;
+
+}
+.report-preview-row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:1rem;
+
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-radius:14px;
+
+    transition:.25s;
+
+}
+
+.report-preview-row:hover{
+
+    background:var(--surface-2);
+
+}
+
+.report-preview-value{
+    font-weight:600;
+    color:#2563eb;
+    text-align:right;
+}
+
+/* ==========================================================
+   ALERT
+========================================================== */
+
+.alert{
+    padding:1rem 1.25rem;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    gap:.75rem;
+    font-weight:500;
+}
+
+.alert-success{
+    background:#ecfdf5;
+    color:#166534;
+    border:1px solid #bbf7d0;
+}
+
+.alert i{
+    font-size:1.2rem;
+}
+
+/* ==========================================================
+   HORIZONTAL RULE
+========================================================== */
+
+hr{
+    border:none;
+    border-top:1px solid #e5e7eb;
+    margin:1rem 0;
+}
+
+/* ==========================================================
+   ANIMATIONS
+========================================================== */
+
+.upload-card,
+
+.card{
+    animation:fadeUp .5s ease;
+}
+
+@keyframes fadeUp{
+
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media(max-width:992px){
+
+    .import-container{
+        grid-template-columns:1fr;
+    }
+
+    .hero{
+        padding:2rem;
+    }
+
+    .page-title{
+        font-size:1.7rem;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .drop-zone{
+        min-height:240px;
+        padding:2rem 1rem;
+    }
+
+    .drop-icon{
+
+        width:70px;
+        height:70px;
+
+        font-size:32px;
+
+    }
+
+    .preview-row,
+    .report-preview-row{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:.4rem;
+    }
+
+    .report-preview-value{
+        text-align:left;
+    }
+
+    .btn{
+        width:100%;
+        justify-content:center;
+    }
+
+}
+
+@media(max-width:576px){
+
+    .hero{
+        padding:1.5rem;
+    }
+
+    .page-title{
+        font-size:1.4rem;
+    }
+
+    .upload-card,
+    .card{
+        padding:1.25rem;
+    }
+
+}

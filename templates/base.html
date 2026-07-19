@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+        HCP Decision Platform
+        {% endblock %}
+    </title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% block styles %}
+    {% endblock %}
+
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- ================= Sidebar ================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+
+            <div class="logo">
+
+                <div class="logo-icon">
+                    <img src="{{ url_for('static', filename='images/logo_hcp.png') }}" alt="HCP Logo">
+                </div>
+
+                <div class="logo-text">
+
+                    <h5>HCP</h5>
+
+                    <span>Decision Platform</span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <nav class="sidebar-menu">
+
+            <a href="{{ url_for('home') }}" class="menu-item">
+
+                <i class="bi bi-house-door"></i>
+
+                <span>Accueil</span>
+
+            </a>
+
+            <a href="{{ url_for('import_data') }}" class="menu-item">
+
+                <i class="bi bi-upload"></i>
+
+                <span>Importer</span>
+
+            </a>
+
+            <a href="http://localhost:8088"
+               target="_blank"
+               class="menu-item">
+
+                <i class="bi bi-bar-chart-line"></i>
+
+                <span>Dashboard</span>
+
+            </a>
+
+            <a href="{{ url_for('assistant') }}"
+               class="menu-item">
+
+                <i class="bi bi-robot"></i>
+
+                <span>Assistant IA</span>
+
+            </a>
+
+            <a href="{{ url_for('report') }}"
+               class="menu-item">
+
+                <i class="bi bi-file-earmark-text"></i>
+
+                <span>Rapports</span>
+
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+
+            <small>
+
+                HCP BI Platform
+
+            </small>
+
+        </div>
+
+    </aside>
+
+    <!-- ================= Main ================= -->
+
+    <main class="main">
+
+        <!-- Header -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h2 class="topbar-title">
+
+                    {% block page_title %}
+                    Tableau de bord
+                    {% endblock %}
+
+                </h2>
+
+                <small class="topbar-subtitle">
+
+                    Plateforme intelligente d'aide à la décision
+
+                </small>
+
+            </div>
+
+            <div class="topbar-right">
+
+                <button class="notification-btn">
+
+                    <i class="bi bi-bell"></i>
+
+                </button>
+
+                <div class="user">
+
+                    <div class="user-avatar">
+
+                        C
+
+                    </div>
+
+                    <div>
+
+                        <div class="user-name">
+
+                            Chaimae
+
+                        </div>
+
+                        <small>
+
+                            Analyste
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- Content -->
+
+        <section class="page-content">
+
+            {% block content %}
+            {% endblock %}
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+{% block scripts %}
+{% endblock %}
+
+</body>
+</html>

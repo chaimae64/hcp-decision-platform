@@ -1,0 +1,108 @@
+/* ==========================================================
+   HCP PLATFORM DESIGN SYSTEM
+========================================================== */
+
+:root{
+
+    /* ================= COLORS ================= */
+
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+    --primary-light:#DBEAFE;
+
+    --secondary:#0F172A;
+
+    --background:#F6F8FC;
+    --surface:#FFFFFF;
+    --surface-2:#F8FAFC;
+    --surface-3:#EEF2FF;
+
+    --border:#E5E7EB;
+    --border-light:#F1F5F9;
+
+    --text:#0F172A;
+    --text-secondary:#64748B;
+    --text-muted:#94A3B8;
+    --text-white:#FFFFFF;
+
+    --success:#10B981;
+    --warning:#F59E0B;
+    --danger:#EF4444;
+    --info:#3B82F6;
+
+    /* ================= SIDEBAR ================= */
+
+    --sidebar-width:260px;
+    --sidebar-bg:#07152F;
+    --sidebar-hover:#0D2A58;
+    --sidebar-active:#2563EB;
+    --sidebar-text:#CBD5E1;
+
+    /* ================= HEADER ================= */
+
+    --header-height:78px;
+
+    /* ================= CARDS ================= */
+
+    --card-bg:#FFFFFF;
+    --card-hover:#F8FAFC;
+
+    /* ================= SHADOW ================= */
+
+    --shadow-xs:0 1px 2px rgba(15,23,42,.04);
+
+    --shadow-sm:0 3px 10px rgba(15,23,42,.05);
+
+    --shadow-md:0 8px 25px rgba(15,23,42,.07);
+
+    --shadow-lg:0 18px 45px rgba(15,23,42,.10);
+
+    --shadow-xl:0 30px 60px rgba(15,23,42,.12);
+
+    /* ================= BORDER RADIUS ================= */
+
+    --radius-xs:8px;
+    --radius-sm:12px;
+    --radius-md:18px;
+    --radius-lg:24px;
+    --radius-xl:32px;
+
+    /* ================= SPACING ================= */
+
+    --space-1:4px;
+    --space-2:8px;
+    --space-3:12px;
+    --space-4:16px;
+    --space-5:20px;
+    --space-6:24px;
+    --space-8:32px;
+    --space-10:40px;
+    --space-12:48px;
+    --space-16:64px;
+
+    /* ================= TYPOGRAPHY ================= */
+
+    --font-family:"Inter",sans-serif;
+
+    --text-xs:.75rem;
+    --text-sm:.875rem;
+    --text-md:1rem;
+    --text-lg:1.125rem;
+    --text-xl:1.5rem;
+    --text-2xl:2rem;
+    --text-3xl:2.75rem;
+
+    --fw-normal:400;
+    --fw-medium:500;
+    --fw-semibold:600;
+    --fw-bold:700;
+
+    /* ================= TRANSITIONS ================= */
+
+    --transition-fast:.2s ease;
+
+    --transition:.3s ease;
+
+    --transition-slow:.45s ease;
+
+}

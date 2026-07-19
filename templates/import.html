@@ -1,0 +1,448 @@
+{% extends "base.html" %}
+
+{% block title %}
+Importation | HCP Decision Platform
+{% endblock %}
+
+{% block page_title %}
+Importation des données
+{% endblock %}
+
+{% block content %}
+
+<div class="import-page">
+
+    <!-- ======================================================
+    HERO
+    ======================================================= -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <span class="badge badge-info">
+
+                Importation des données
+
+            </span>
+
+            <h1 class="page-title">
+
+                Importer des données
+
+            </h1>
+
+            <p class="page-subtitle">
+
+                Importez un fichier CSV ou Excel afin de préparer vos données pour leur visualisation dans Apache Superset et leur analyse via l'assistant IA.
+
+
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- ======================================================
+    FLASH MESSAGE
+    ======================================================= -->
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+
+    <div class="card mb-4">
+
+        {% for message in messages %}
+
+        <div class="alert alert-success mb-2">
+
+            <i class="bi bi-check-circle-fill"></i>
+
+            {{ message }}
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+    {% endwith %}
+
+    <!-- ======================================================
+    IMPORT
+    ======================================================= -->
+
+    <div class="import-container">
+
+        <div class="upload-card">
+
+            <form
+
+                id="uploadForm"
+
+                method="POST"
+
+                action="{{ url_for('import_data') }}"
+
+                enctype="multipart/form-data">
+
+                <!-- ================= DROP ZONE ================= -->
+
+                <label
+                    class="drop-zone"
+                    id="dropZone">
+
+                    <input
+
+                        id="fileInput"
+
+                        type="file"
+
+                        name="file"
+
+                        accept=".csv,.xlsx,.xls"
+
+                        required>
+
+                    <div class="drop-icon">
+
+                        <i class="bi bi-cloud-arrow-up-fill"></i>
+
+                    </div>
+
+                    <h3>
+
+                        Glissez votre fichier ici
+
+                    </h3>
+
+                    <p>
+
+                        ou cliquez pour parcourir votre ordinateur
+
+                    </p>
+
+                    <small>
+
+                        Formats acceptés :
+                        CSV • XLS • XLSX
+
+                    </small>
+
+                </label>
+
+                <!-- ================= PREVIEW ================= -->
+
+                <div
+
+                    class="file-preview"
+
+                    id="filePreview"
+
+                    style="display:none;">
+
+                    <h4>
+
+                        Informations du fichier
+
+                    </h4>
+
+                    <hr>
+
+                    <div class="preview-row">
+
+                        <span>
+
+                            Nom
+
+                        </span>
+
+                        <strong id="fileName">
+
+                        </strong>
+
+                    </div>
+
+                    <div class="preview-row">
+
+                        <span>
+
+                            Taille
+
+                        </span>
+
+                        <strong id="fileSize">
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+                <!-- ================= TABLE ================= -->
+
+                <div class="mt-4">
+
+                    <label class="form-label">
+
+                        Nom de la table PostgreSQL
+
+                    </label>
+
+                    <input
+
+                        id="table_name"
+
+                        name="table_name"
+
+                        type="text"
+
+                        class="form-control"
+
+                        placeholder="Exemple : chomage"
+
+                        required>
+
+                </div>
+
+                <!-- ================= BUTTON ================= -->
+
+                <div class="mt-4">
+
+                    <button
+
+                        class="btn btn-primary"
+
+                        type="submit">
+
+                        <i class="bi bi-upload"></i>
+
+                        Importer et traiter
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- ======================================================
+        RÉSULTAT DE L'IMPORT
+        ======================================================= -->
+
+        {% if import_info %}
+
+        <div class="card mt-4">
+
+            <h3 class="card-title">
+
+                <i class="bi bi-check-circle-fill text-success"></i>
+
+                Import terminé avec succès
+
+            </h3>
+
+            <div class="report-preview">
+
+                <div class="report-preview-row">
+
+                    <span>Nom du fichier</span>
+
+                    <span class="report-preview-value">
+
+                        {{ import_info.filename }}
+
+                    </span>
+
+                </div>
+
+                <div class="report-preview-row">
+
+                    <span>Nombre de lignes</span>
+
+                    <span class="report-preview-value">
+
+                        {{ import_info.rows }}
+
+                    </span>
+
+                </div>
+
+                <div class="report-preview-row">
+
+                    <span>Nombre de colonnes</span>
+
+                    <span class="report-preview-value">
+
+                        {{ import_info.columns }}
+
+                    </span>
+
+                </div>
+
+                <div class="report-preview-row">
+
+                    <span>Base PostgreSQL</span>
+
+                    <span class="report-preview-value">
+
+                        {{ import_info.database }}
+
+                    </span>
+
+                </div>
+
+                <div class="report-preview-row">
+
+                    <span>Table créée</span>
+
+                    <span class="report-preview-value">
+
+                        {{ import_info.table }}
+
+                    </span>
+
+                </div>
+
+                <div class="report-preview-row">
+
+                    <span>Ligne d'en-tête détectée</span>
+
+                    <span class="report-preview-value">
+
+                        {{ import_info.header }}
+
+                    </span>
+
+                </div>
+
+                <div class="report-preview-row">
+
+                    <span>Colonnes textuelles</span>
+
+                    <span class="report-preview-value">
+
+                        {{ import_info.text_columns }}
+
+                    </span>
+
+                </div>
+
+                <div class="report-preview-row">
+
+                    <span>Colonnes numériques</span>
+
+                    <span class="report-preview-value">
+
+                        {{ import_info.numeric_columns }}
+
+                    </span>
+
+                </div>
+
+                <div class="report-preview-row">
+
+                    <span>Apache Superset</span>
+
+                    <span class="report-preview-value">
+
+                        {{ import_info.superset }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+const fileInput = document.getElementById("fileInput");
+
+const tableInput = document.getElementById("table_name");
+
+const preview = document.getElementById("filePreview");
+
+const fileName = document.getElementById("fileName");
+
+const fileSize = document.getElementById("fileSize");
+
+fileInput.addEventListener("change", function(){
+
+    if(this.files.length===0)
+        return;
+
+    const file=this.files[0];
+
+    preview.style.display="block";
+
+    fileName.textContent=file.name;
+
+    fileSize.textContent=(file.size/1024).toFixed(2)+" Ko";
+
+    let filename=file.name;
+
+    filename=filename.substring(
+        0,
+        filename.lastIndexOf(".")
+    );
+
+    filename=filename
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g,"")
+        .replace(/[^a-z0-9]+/g,"_")
+        .replace(/^_+|_+$/g,"");
+
+    tableInput.value=filename;
+
+});
+
+/* =============================
+DRAG & DROP
+============================= */
+
+const dropZone=document.getElementById("dropZone");
+
+dropZone.addEventListener("dragover",function(e){
+
+    e.preventDefault();
+
+    dropZone.classList.add("dragover");
+
+});
+
+dropZone.addEventListener("dragleave",function(){
+
+    dropZone.classList.remove("dragover");
+
+});
+
+dropZone.addEventListener("drop",function(e){
+
+    e.preventDefault();
+
+    dropZone.classList.remove("dragover");
+
+    fileInput.files=e.dataTransfer.files;
+
+    fileInput.dispatchEvent(new Event("change"));
+
+});
+
+</script>
+
+{% endblock %}

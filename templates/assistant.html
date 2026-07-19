@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block title %}
+Assistant IA | HCP Decision Platform
+{% endblock %}
+
+{% block page_title %}
+Assistant IA
+{% endblock %}
+
+{% block content %}
+
+<div class="assistant-page">
+
+    <!-- ================= HEADER ================= -->
+
+    <div class="assistant-header">
+
+        <div>
+
+            <h1 class="page-title">
+
+                Assistant Intelligent
+
+            </h1>
+
+            <p class="page-subtitle">
+
+                Posez vos questions en langage naturel sur les données
+                statistiques du HCP.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- ================= CHAT ================= -->
+
+    <div class="assistant-container">
+
+        <!-- Conversation -->
+
+        <div class="chat-window">
+
+            {% if response %}
+
+            <!-- USER -->
+
+            <div class="message user-message">
+
+                <div class="message-avatar">
+
+                    <i class="bi bi-person-fill"></i>
+
+                </div>
+
+                <div class="message-content">
+
+                    {{ request.form.question }}
+
+                </div>
+
+            </div>
+
+            <!-- AI -->
+
+            <div class="message ai-message">
+
+                <div class="message-avatar">
+
+                    <i class="bi bi-robot"></i>
+
+                </div>
+
+                <div class="message-content">
+
+                    {{ response }}
+
+                </div>
+
+            </div>
+
+            {% else %}
+
+            <div class="assistant-empty">
+
+                <div class="assistant-icon">
+
+                    <i class="bi bi-robot"></i>
+
+                </div>
+
+                <h2>
+
+                    Bonjour 👋
+
+                </h2>
+
+                <p>
+
+                    Commencez une conversation avec votre assistant IA.
+
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        <!-- FORMULAIRE -->
+
+        <div class="assistant-input">
+
+            <form method="POST">
+
+                <!-- DATASET -->
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Dataset
+
+                    </label>
+
+                    <select
+                        name="dataset"
+                        class="form-select"
+                        required>
+
+                        {% for dataset in datasets %}
+
+                        <option value="{{ dataset }}">
+
+                            {{ dataset }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <!-- QUESTION -->
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Votre question
+
+                    </label>
+
+                    <textarea
+
+                        class="form-control"
+
+                        rows="4"
+
+                        name="question"
+
+                        placeholder="Exemple : Quel est le taux de chômage selon les régions ?"
+
+                        required>
+
+</textarea>
+
+                </div>
+
+                <button
+                        class="btn btn-primary"
+                        type="submit">
+
+                    <i class="bi bi-send"></i>
+
+                    Envoyer
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- ================= SUGGESTIONS ================= -->
+
+    <div class="card mt-4">
+
+        <h3 class="card-title">
+
+            Suggestions
+
+        </h3>
+
+        <div class="suggestions">
+
+            <button class="btn btn-light">
+
+                Taux de chômage par région
+
+            </button>
+
+            <button class="btn btn-light">
+
+                Comparaison Homme / Femme
+
+            </button>
+
+            <button class="btn btn-light">
+
+                Région la plus touchée
+
+            </button>
+
+            <button class="btn btn-light">
+
+                Évolution entre 2020 et 2025
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+{% block scripts %}
+
+<script src="{{ url_for('static', filename='js/assistant.js') }}"></script>
+
+{% endblock %}

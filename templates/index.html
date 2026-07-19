@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | HCP Decision Platform{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="welcome-card">
+
+    <div class="welcome-left">
+
+        <span class="welcome-badge">
+            HCP Decision Platform
+        </span>
+
+        <h1>
+            Plateforme intelligente d'aide à la décision
+        </h1>
+
+        <p>
+            Importez vos données statistiques, visualisez-les avec Apache Superset
+            et utilisez l'assistant IA pour faciliter l'analyse et la prise de décision.
+        </p>
+
+    </div>
+
+    <div class="welcome-buttons">
+
+        <a href="{{ url_for('import_data') }}" class="btn btn-primary">
+            <i class="bi bi-upload"></i>
+            Importer
+        </a>
+
+        <a href="http://localhost:8088"
+           target="_blank"
+           class="btn btn-secondary">
+
+            <i class="bi bi-bar-chart"></i>
+
+            Superset
+
+        </a>
+
+    </div>
+
+</div>
+
+<h2 class="modules-title">
+    Modules
+</h2>
+
+<div class="modules-grid">
+
+    <a href="{{ url_for('import_data') }}" class="module-card">
+
+        <i class="bi bi-upload"></i>
+
+        <h3>Importer</h3>
+
+        <p>Importer des fichiers CSV ou Excel.</p>
+
+    </a>
+
+    <a href="http://localhost:8088"
+       target="_blank"
+       class="module-card">
+
+        <i class="bi bi-bar-chart-line"></i>
+
+        <h3>Dashboards</h3>
+
+        <p>Explorer les tableaux de bord Apache Superset.</p>
+
+    </a>
+
+    <a href="{{ url_for('assistant') }}" class="module-card">
+
+        <i class="bi bi-robot"></i>
+
+        <h3>Assistant IA</h3>
+
+        <p>Analyser les données en langage naturel.</p>
+
+    </a>
+
+    <a href="{{ url_for('report') }}" class="module-card">
+
+        <i class="bi bi-file-earmark-text"></i>
+
+        <h3>Rapports</h3>
+
+        <p>Consulter les rapports générés.</p>
+
+    </a>
+
+</div>
+
+{% endblock %}

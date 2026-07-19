@@ -1,0 +1,20 @@
+/* ==========================================================
+   HCP PLATFORM
+   Main CSS
+========================================================== */
+
+@import url("variables.css");
+
+@import url("layout.css");
+
+@import url("components.css");
+
+@import url("home.css");
+
+@import url("dashboard.css");
+
+@import url("assistant.css");
+
+@import url("import.css");
+
+@import url("report.css");
