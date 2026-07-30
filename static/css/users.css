@@ -1,0 +1,516 @@
+/* ==========================================================
+   USERS PAGE
+========================================================== */
+
+.users-page{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:30px;
+    align-items:start;
+}
+
+/* ==========================================================
+   LEFT
+========================================================== */
+
+.users-header{
+    margin-bottom:25px;
+}
+
+.users-header h2{
+    font-size:2rem;
+    font-weight:700;
+    color:#1d2b4f;
+    margin-bottom:8px;
+}
+
+.users-header p{
+    color:#7a8599;
+    margin:0;
+    font-size:.95rem;
+}
+
+.users-create-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+
+    border:none;
+
+    background:#1f5fbf;
+
+    color:white;
+
+    padding:12px 22px;
+
+    border-radius:10px;
+
+    font-weight:600;
+
+    margin-bottom:25px;
+
+    transition:.25s;
+
+    cursor:pointer;
+}
+
+.users-create-btn:hover{
+
+    background:#184d9b;
+
+    transform:translateY(-2px);
+
+}
+
+/* ==========================================================
+   TABLE CARD
+========================================================== */
+
+.users-table-card{
+
+    background:white;
+
+    border-radius:16px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+
+    overflow:hidden;
+
+}
+
+.users-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+.users-table thead{
+
+    background:#f8f9fc;
+
+}
+
+.users-table th{
+
+    padding:18px;
+
+    text-align:left;
+
+    font-weight:600;
+
+    color:#1d2b4f;
+
+    border-bottom:1px solid #ececec;
+
+}
+
+.users-table td{
+
+    padding:18px;
+
+    border-bottom:1px solid #f0f0f0;
+
+    color:#404b5a;
+
+}
+
+.users-table tbody tr{
+
+    transition:.2s;
+
+}
+
+.users-table tbody tr:hover{
+
+    background:#fafcff;
+
+}
+
+.empty-users{
+
+    text-align:center;
+
+    padding:40px;
+
+    color:#999;
+
+}
+
+/* ==========================================================
+   ROLE BADGES
+========================================================== */
+
+.role-badge{
+
+    display:inline-block;
+
+    padding:6px 14px;
+
+    border-radius:30px;
+
+    font-size:.85rem;
+
+    font-weight:600;
+
+}
+
+.role-admin{
+
+    background:#e8f5e9;
+
+    color:#2e7d32;
+
+}
+
+.role-analyst{
+
+    background:#e3f2fd;
+
+    color:#1565c0;
+
+}
+
+/* ==========================================================
+   ACTIONS
+========================================================== */
+
+.action-buttons{
+
+    display:flex;
+
+    gap:10px;
+
+}
+
+.action-btn{
+
+    border:none;
+
+    background:none;
+
+    cursor:pointer;
+
+    font-size:.92rem;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    transition:.2s;
+
+    font-weight:500;
+
+}
+
+.edit-btn{
+
+    color:#1f5fbf;
+
+}
+
+.edit-btn:hover{
+
+    color:#184d9b;
+
+}
+
+.delete-btn{
+
+    color:#d32f2f;
+
+}
+
+.delete-btn:hover{
+
+    color:#a71d1d;
+
+}
+
+/* ==========================================================
+   RIGHT CARD
+========================================================== */
+
+.users-form-card{
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:30px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+
+    position:sticky;
+
+    top:30px;
+
+}
+
+.users-form-card h3{
+
+    font-size:1.45rem;
+
+    color:#1d2b4f;
+
+    font-weight:700;
+
+    margin-bottom:30px;
+
+}
+
+/* ==========================================================
+   FORM
+========================================================== */
+
+.form-group{
+
+    margin-bottom:22px;
+
+}
+
+.form-group label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    font-weight:600;
+
+    color:#374151;
+
+}
+
+.form-control{
+
+    width:100%;
+
+    padding:12px 14px;
+
+    border:1px solid #dcdfe5;
+
+    border-radius:10px;
+
+    font-size:.95rem;
+
+    transition:.25s;
+
+}
+
+.form-control:focus{
+
+    outline:none;
+
+    border-color:#1f5fbf;
+
+    box-shadow:0 0 0 4px rgba(31,95,191,.12);
+
+}
+
+.role-radio{
+
+    margin-top:10px;
+
+}
+
+.role-radio label{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    cursor:pointer;
+
+    font-weight:500;
+
+}
+
+.role-radio input{
+
+    transform:scale(1.15);
+
+}
+
+/* ==========================================================
+   CREATE BUTTON
+========================================================== */
+
+.btn-create-user{
+
+    width:100%;
+
+    border:none;
+
+    background:#0d2d66;
+
+    color:white;
+
+    padding:14px;
+
+    border-radius:10px;
+
+    font-size:1rem;
+
+    font-weight:600;
+
+    transition:.25s;
+
+    cursor:pointer;
+
+    margin-top:10px;
+
+}
+
+.btn-create-user:hover{
+
+    background:#0b2552;
+
+    transform:translateY(-2px);
+
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media(max-width:1200px){
+
+    .users-page{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .users-form-card{
+
+        position:relative;
+
+        top:0;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .users-header h2{
+
+        font-size:1.6rem;
+
+    }
+
+    .users-table{
+
+        display:block;
+
+        overflow-x:auto;
+
+    }
+
+    .users-create-btn{
+
+        width:100%;
+
+        justify-content:center;
+
+    }
+
+}
+.btn-cancel-user{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#f1f3f5;
+
+    color:#374151;
+
+    font-weight:600;
+
+    margin-bottom:12px;
+
+    transition:.25s;
+
+    cursor:pointer;
+
+}
+
+.btn-cancel-user:hover{
+
+    background:#e4e7eb;
+
+}
+.btn-return{
+
+    display: inline-block;
+
+    margin-top: 15px;
+
+    padding: 12px 25px;
+
+    background: #6c757d;
+
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 10px;
+
+    font-weight: 600;
+
+    transition: 0.3s;
+
+}
+
+.btn-return:hover{
+
+    background: #5a6268;
+
+    color: white;
+
+}
+.buttons{
+
+    display: flex;
+
+    gap: 15px;
+
+    margin-top: 20px;
+
+}
+
+.btn-create-user{
+
+    flex: 1;
+
+}
+
+.btn-return{
+
+    padding: 15px 25px;
+
+    background: #6c757d;
+
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 10px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}

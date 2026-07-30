@@ -12,7 +12,9 @@ class ResponseFormatter:
     def success(
 
             question,
-            answer,
+            analysis,
+            statistics,
+            llm_answer,
             route,
             execution_time=None,
             model=None
@@ -31,7 +33,12 @@ class ResponseFormatter:
 
             "modules_used": route["modules"],
 
-            "answer": answer,
+            "data": analysis,
+
+            "statistics": statistics,
+
+
+            "analysis": llm_answer,
 
             "execution_time": execution_time,
 
@@ -135,3 +142,15 @@ class ResponseFormatter:
                 prompt_length
 
         }
+    
+
+    @staticmethod
+    def statistics(interpreted_statistics):
+
+        if not interpreted_statistics:
+            return "Aucune interprétation statistique disponible."
+
+        year = next(iter(interpreted_statistics))
+        summary = interpreted_statistics[year].get("summary", "")
+
+        return f"En {year}, {summary}"

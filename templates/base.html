@@ -72,6 +72,8 @@
 
             </a>
 
+            {% if current_user.role == "admin" %}
+
             <a href="{{ url_for('import_data') }}" class="menu-item">
 
                 <i class="bi bi-upload"></i>
@@ -79,6 +81,8 @@
                 <span>Importer</span>
 
             </a>
+
+            {% endif %}
 
             <a href="http://localhost:8088"
                target="_blank"
@@ -107,10 +111,30 @@
                 <span>Rapports</span>
 
             </a>
+            {% if current_user.role == "admin" %}
+
+            <a href="{{ url_for('users') }}"
+            class="menu-item">
+
+                <i class="bi bi-people"></i>
+
+                <span>Gestion utilisateurs</span>
+
+            </a>
+
+            {% endif %}
 
         </nav>
 
         <div class="sidebar-footer">
+
+            <a href="{{ url_for('logout') }}" class="menu-item">
+
+                <i class="bi bi-box-arrow-right"></i>
+
+                <span>Déconnexion</span>
+
+            </a>
 
             <small>
 
@@ -160,7 +184,7 @@
 
                     <div class="user-avatar">
 
-                        C
+                        {{ current_user.username[0] | upper }}
 
                     </div>
 
@@ -168,13 +192,13 @@
 
                         <div class="user-name">
 
-                            Chaimae
+                            {{ current_user.username }}
 
                         </div>
 
                         <small>
 
-                            Analyste
+                            {{ current_user.role | capitalize }}
 
                         </small>
 

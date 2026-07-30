@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block title %}
-Rapport d'analyse | HCP Decision Platform
+Rapports | HCP Decision Platform
 {% endblock %}
 
 {% block page_title %}
-Rapport d'analyse
+Rapports d'analyse
 {% endblock %}
 
 {% block content %}
@@ -16,27 +16,19 @@ Rapport d'analyse
     HERO
     ====================================================== -->
 
-    <section class="report-hero">
+    <section class="report-header">
 
-        <div class="report-hero-content">
-
-            <span class="badge badge-info">
-
-                Rapport intelligent
-
-            </span>
+        <div>
 
             <h1 class="page-title">
 
-                Rapport d'aide à la décision
+                Rapports d'analyse
 
             </h1>
 
-            <p class="page-subtitle">
+            <p class="page-description">
 
-                Cette page présente un résumé complet des données
-                importées ainsi que les principaux indicateurs
-                statistiques générés automatiquement par la plateforme.
+                Générez un rapport d'analyse à partir du dataset actuellement importé.
 
             </p>
 
@@ -45,506 +37,63 @@ Rapport d'analyse
     </section>
 
     <!-- =====================================================
-    KPIs
-    ====================================================== -->
-
-    <div class="kpi-grid">
-
-        <div class="kpi-card">
-
-            <div class="kpi-icon">
-
-                <i class="bi bi-table"></i>
-
-            </div>
-
-            <div>
-
-                <div class="kpi-label">
-
-                    Nombre de lignes
-
-                </div>
-
-                <div class="kpi-value">
-
-                    {{ report.rows if report else "--" }}
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="kpi-card">
-
-            <div class="kpi-icon">
-
-                <i class="bi bi-columns-gap"></i>
-
-            </div>
-
-            <div>
-
-                <div class="kpi-label">
-
-                    Colonnes
-
-                </div>
-
-                <div class="kpi-value">
-
-                    {{ report.columns if report else "--" }}
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="kpi-card">
-
-            <div class="kpi-icon">
-
-                <i class="bi bi-database"></i>
-
-            </div>
-
-            <div>
-
-                <div class="kpi-label">
-
-                    Table PostgreSQL
-
-                </div>
-
-                <div class="kpi-value">
-
-                    {{ report.table if report else "--" }}
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="kpi-card">
-
-            <div class="kpi-icon">
-
-                <i class="bi bi-bar-chart-fill"></i>
-
-            </div>
-
-            <div>
-
-                <div class="kpi-label">
-
-                    Dataset Superset
-
-                </div>
-
-                <div class="kpi-value">
-
-                    {{ report.dataset if report else "--" }}
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-    <!-- =====================================================
-    SCORE DECISIONNEL
+    DATASET ACTUEL
     ====================================================== -->
 
     <div class="card mt-4">
 
         <h2 class="card-title">
 
-            <i class="bi bi-speedometer2"></i>
+            <i class="bi bi-database-fill"></i>
 
-            Score décisionnel
-
-        </h2>
-
-        {% if report %}
-
-        <div class="stats-grid">
-
-            <div class="stat-card">
-
-                <h4>Score</h4>
-
-                <p>
-
-                    {{ report.decision.decision_score }}/100
-
-                </p>
-
-            </div>
-
-            <div class="stat-card">
-
-                <h4>Niveau</h4>
-
-                <p>
-
-                    {{ report.decision.decision_level }}
-
-                </p>
-
-            </div>
-
-            <div class="stat-card">
-
-                <h4>Priorité</h4>
-
-                <p>
-
-                    {{ report.decision.priority }}
-
-                </p>
-
-            </div>
-
-        </div>
-
-        {% endif %}
-
-    </div>
-
-
-
-
-
-
-
-    <!-- =====================================================
-    EXECUTIVE SUMMARY
-    ====================================================== -->
-
-    <div class="card mt-4">
-
-        <h2 class="card-title">
-
-            <i class="bi bi-file-earmark-text-fill"></i>
-
-            Résumé exécutif
+            Dataset actuel
 
         </h2>
 
-        {% if report %}
-
-        <p class="report-summary">
-
-            {{ report.summary }}
-
-        </p>
-
-        {% else %}
-
-        <p class="report-summary">
-
-            Aucun rapport n'est encore disponible.
-
-            Importez un dataset puis lancez une analyse afin
-            de générer automatiquement un rapport intelligent.
-
-        </p>
-
-        {% endif %}
-
-    </div>
-
-    <!-- =====================================================
-    INFORMATIONS GÉNÉRALES
-    ====================================================== -->
-
-    <div class="card mt-4">
-
-        <h2 class="card-title">
-
-            <i class="bi bi-info-circle-fill"></i>
-
-            Informations générales
-
-        </h2>
+        {% if import_info %}
 
         <table class="table">
 
             <tbody>
 
                 <tr>
-
                     <th>Nom du fichier</th>
-
-                    <td>
-
-                        {{ report.filename if report else "--" }}
-
-                    </td>
-
+                    <td>{{ import_info.filename }}</td>
                 </tr>
 
                 <tr>
-
-                    <th>Date d'importation</th>
-
-                    <td>
-
-                        {{ report.date if report else "--" }}
-
-                    </td>
-
-                </tr>
-
-                <tr>
-
                     <th>Base de données</th>
-
-                    <td>
-
-                        {{ report.database if report else "--" }}
-
-                    </td>
-
+                    <td>{{ import_info.database }}</td>
                 </tr>
 
                 <tr>
-
                     <th>Table PostgreSQL</th>
-
-                    <td>
-
-                        {{ report.table if report else "--" }}
-
-                    </td>
-
+                    <td>{{ import_info.table }}</td>
                 </tr>
 
                 <tr>
+                    <th>Colonnes</th>
+                    <td>{{ import_info.columns }}</td>
+                </tr>
 
-                    <th>Apache Superset</th>
-
-                    <td>
-
-                        {{ report.dataset if report else "--" }}
-
-                    </td>
-
+                <tr>
+                    <th>Lignes</th>
+                    <td>{{ import_info.rows }}</td>
                 </tr>
 
             </tbody>
 
         </table>
 
-    </div>
-        <!-- =====================================================
-    RECOMMANDATIONS IA
-    ====================================================== -->
-
-    <div class="card mt-4">
-
-        <h2 class="card-title">
-
-            <i class="bi bi-robot"></i>
-
-            Recommandations de l'Assistant IA
-
-        </h2>
-
-        {% if report and report.recommendations %}
-
-        <div class="recommendation-list">
-
-            {% for recommendation in report.recommendations %}
-
-            <div class="recommendation-card">
-
-                <div class="recommendation-icon">
-
-                    <i class="bi bi-lightbulb-fill"></i>
-
-                </div>
-
-                <div class="recommendation-content">
-
-                    {{ recommendation }}
-
-                </div>
-
-            </div>
-
-            {% endfor %}
-
-        </div>
-
-        {% else %}
-
-        <div class="recommendation-card">
-
-            <div class="recommendation-icon">
-
-                <i class="bi bi-info-circle-fill"></i>
-
-            </div>
-
-            <div class="recommendation-content">
-
-                Les recommandations seront générées automatiquement
-                après l'analyse du dataset.
-
-            </div>
-
-        </div>
-
-        {% endif %}
-
-    </div>
-
-    <!-- =====================================================
-    STATISTIQUES
-    ====================================================== -->
-
-    <div class="card mt-4">
-
-        <h2 class="card-title">
-
-            <i class="bi bi-bar-chart-line-fill"></i>
-
-            Statistiques du dataset
-
-        </h2>
-
-        <div class="stats-grid">
-
-            <div class="stat-card">
-
-                <h4>Colonnes numériques</h4>
-
-                <p>
-
-                    {{ report.numeric_columns if report else "--" }}
-
-                </p>
-
-            </div>
-
-            <div class="stat-card">
-
-                <h4>Colonnes textuelles</h4>
-
-                <p>
-
-                    {{ report.text_columns if report else "--" }}
-
-                </p>
-
-            </div>
-
-            <div class="stat-card">
-
-                <h4>Valeurs manquantes</h4>
-
-                <p>
-
-                    {{ report.missing_values if report else "--" }}
-
-                </p>
-
-            </div>
-
-            <div class="stat-card">
-
-                <h4>Doublons détectés</h4>
-
-                <p>
-
-                    {{ report.duplicates if report else "--" }}
-
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- =====================================================
-    APERÇU DES DONNÉES
-    ====================================================== -->
-
-    <div class="card mt-4">
-
-        <h2 class="card-title">
-
-            <i class="bi bi-table"></i>
-
-            Aperçu du dataset
-
-        </h2>
-
-        {% if report and report.preview %}
-
-        <div class="table-responsive">
-
-            <table class="table">
-
-                <thead>
-
-                    <tr>
-
-                        {% for col in report.preview.columns %}
-
-                        <th>
-
-                            {{ col }}
-
-                        </th>
-
-                        {% endfor %}
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {% for row in report.preview.rows %}
-
-                    <tr>
-
-                        {% for value in row %}
-
-                        <td>
-
-                            {{ value }}
-
-                        </td>
-
-                        {% endfor %}
-
-                    </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
         {% else %}
 
         <div class="empty-state">
 
-            <i class="bi bi-table"></i>
+            <i class="bi bi-folder-x"></i>
 
             <p>
 
-                Aucun aperçu disponible.
+                Aucun dataset importé.
 
             </p>
 
@@ -555,122 +104,38 @@ Rapport d'analyse
     </div>
 
     <!-- =====================================================
-    OBSERVATIONS
+    ACTIONS
     ====================================================== -->
 
     <div class="card mt-4">
 
         <h2 class="card-title">
 
-            <i class="bi bi-search"></i>
+            <i class="bi bi-lightning-charge-fill"></i>
 
-            Observations principales
-
-        </h2>
-
-        <ul class="observation-list">
-
-            {% if report and report.insights %}
-
-                {% for insight in report.insights %}
-
-                <li>
-
-                    {{ insight }}
-
-                </li>
-
-                {% endfor %}
-
-            {% else %}
-
-                <li>
-
-                    Les observations apparaîtront après l'analyse.
-
-                </li>
-
-            {% endif %}
-
-        </ul>
-
-    </div>
-        <!-- =====================================================
-    DASHBOARD APACHE SUPERSET
-    ====================================================== -->
-
-    <div class="card mt-4">
-
-        <h2 class="card-title">
-
-            <i class="bi bi-graph-up-arrow"></i>
-
-            Dashboard Apache Superset
-
-        </h2>
-
-        {% if report and report.superset_url %}
-
-        <iframe
-            src="{{ report.superset_url }}"
-            width="100%"
-            height="650"
-            frameborder="0"
-            loading="lazy">
-
-        </iframe>
-
-        {% else %}
-
-        <div class="empty-state">
-
-            <i class="bi bi-bar-chart-fill"></i>
-
-            <p>
-
-                Aucun dashboard Superset disponible.
-
-            </p>
-
-        </div>
-
-        {% endif %}
-
-    </div>
-
-    <!-- =====================================================
-    EXPORT
-    ====================================================== -->
-
-    <div class="card mt-4">
-
-        <h2 class="card-title">
-
-            <i class="bi bi-download"></i>
-
-            Exporter le rapport
+            Actions
 
         </h2>
 
         <div class="export-buttons">
 
             <a
-                href="{{ url_for('export_pdf') }}"
+                href="{{ url_for('generate_report') }}"
                 class="btn btn-primary">
 
-                <i class="bi bi-file-earmark-pdf-fill"></i>
+                <i class="bi bi-file-earmark-bar-graph-fill"></i>
 
-                Export PDF
+                Générer le rapport
 
             </a>
 
             <a
-                href="{{ url_for('export_excel') }}"
-                class="btn btn-success">
+                href="{{ url_for('view_report') }}"
+                class="btn btn-outline-primary">
 
-                <i class="bi bi-file-earmark-excel-fill"></i>
+                <i class="bi bi-eye-fill"></i>
 
-                Export Excel
+                Consulter le dernier rapport
 
             </a>
 
@@ -688,7 +153,7 @@ Rapport d'analyse
 
             <i class="bi bi-clock-history"></i>
 
-            Historique des rapports
+            Historique
 
         </h2>
 
@@ -718,29 +183,17 @@ Rapport d'analyse
 
                 <tr>
 
-                    <td>
+                    <td>{{ item.date }}</td>
 
-                        {{ item.date }}
+                    <td>{{ item.dataset }}</td>
 
-                    </td>
-
-                    <td>
-
-                        {{ item.dataset }}
-
-                    </td>
-
-                    <td>
-
-                        {{ item.user }}
-
-                    </td>
+                    <td>{{ item.user }}</td>
 
                     <td>
 
                         <a
-                            href="{{ url_for('report', id=item.id) }}"
-                            class="btn btn-primary btn-sm">
+                            href="{{ url_for('view_report') }}"
+                            class="btn btn-sm btn-primary">
 
                             Ouvrir
 
@@ -764,7 +217,7 @@ Rapport d'analyse
 
             <p>
 
-                Aucun rapport enregistré.
+                Aucun rapport généré.
 
             </p>
 
@@ -775,37 +228,5 @@ Rapport d'analyse
     </div>
 
 </div>
-
-{% endblock %}
-
-{% block scripts %}
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function(){
-
-    console.log("Report page loaded");
-
-    const cards = document.querySelectorAll(".card");
-
-    cards.forEach(function(card){
-
-        card.addEventListener("mouseenter", function(){
-
-            this.style.transform = "translateY(-4px)";
-
-        });
-
-        card.addEventListener("mouseleave", function(){
-
-            this.style.transform = "translateY(0)";
-
-        });
-
-    });
-
-});
-
-</script>
 
 {% endblock %}

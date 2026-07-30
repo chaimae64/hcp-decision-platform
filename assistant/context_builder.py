@@ -1,7 +1,5 @@
 import json
 
-from services.decision_engine import DecisionEngine
-
 
 class ContextBuilder:
 
@@ -31,16 +29,8 @@ class ContextBuilder:
             list(data.items())[:limit]
         )
 
-    # =====================================================
-    # Résumé décisionnel
-    # =====================================================
-
-    @staticmethod
-    def decision_summary(analysis):
-
-        return DecisionEngine.decision_summary(
-            analysis
-        )
+   
+    
 
     # =====================================================
     # Contexte Statistics
@@ -49,21 +39,24 @@ class ContextBuilder:
     @staticmethod
     def statistics_context(analysis):
 
-        statistics = analysis["statistics"]
-
         return {
 
-            "general_information":
+            "general_information": {
 
-                statistics["general_information"],
+                "rows": analysis["general_information"]["rows"],
 
-            "descriptive_statistics":
+                "columns": analysis["general_information"]["columns"]
 
-                ContextBuilder.limit_dict(
+            },
 
-                    statistics["descriptive_statistics"]
+            "statistics": ContextBuilder.limit_dict(
 
+                analysis.get(
+                    "interpreted_statistics",
+                    {}
                 )
+
+            )
 
         }
 
@@ -76,7 +69,10 @@ class ContextBuilder:
 
         return ContextBuilder.limit_dict(
 
-            analysis["trends"]
+            analysis.get(
+                "interpreted_trends",
+                {}
+            )
 
         )
 
@@ -87,24 +83,42 @@ class ContextBuilder:
     @staticmethod
     def ranking_context(analysis):
 
-        return ContextBuilder.limit_dict(
+        result = {}
 
-            analysis["ranking"]
+        for indicator, values in list(analysis.items())[:ContextBuilder.MAX_ITEMS]:
 
-        )
+            result[indicator] = {
+
+                "top5": values["top5"],
+
+                "bottom5": values["bottom5"]
+
+            }
+
+        return result
 
     # =====================================================
     # Contexte Comparison
     # =====================================================
 
     @staticmethod
-    def comparison_context(analysis):
+    def comparison_context(analysis, dimension):
 
-        return ContextBuilder.limit_dict(
-
-            analysis["comparison"]
-
+        comparison = analysis.get(
+            "interpreted_comparison",
+            {}
         )
+
+        if dimension and dimension in comparison:
+
+            return {
+                dimension: comparison[dimension]
+            }
+
+        # aucune dimension trouvée
+        # on renvoie tout
+
+        return ContextBuilder.limit_dict(comparison)
 
     # =====================================================
     # Contexte KPI
@@ -113,7 +127,7 @@ class ContextBuilder:
     @staticmethod
     def kpi_context(analysis):
 
-        kpis = analysis["kpis"]
+        kpis = analysis
 
         return {
 
@@ -158,7 +172,7 @@ class ContextBuilder:
     @staticmethod
     def anomaly_context(analysis):
 
-        anomalies = analysis["anomalies"]
+        anomalies = analysis
 
         return {
 
@@ -179,6 +193,39 @@ class ContextBuilder:
                 ]
 
         }
+    # =====================================================
+    # Contexte Summary
+    # =====================================================
+
+    @staticmethod
+    def summary_context(analysis):
+
+        return {
+
+            "decision": analysis["decision"],
+
+            "summary": analysis["summary"],
+
+            "kpis": {
+
+                "dataset": analysis["kpis"]["dataset"],
+
+                "business": {
+
+                    "overall_average":
+                        analysis["kpis"]["business"]["overall_average"],
+
+                    "best_indicator":
+                        analysis["kpis"]["business"]["best_indicator"],
+
+                    "worst_indicator":
+                        analysis["kpis"]["business"]["worst_indicator"]
+
+                }
+
+            }
+
+        }
 
     # =====================================================
     # Construction intelligente
@@ -189,15 +236,7 @@ class ContextBuilder:
 
         intent = route["intent"]
 
-        context = {
-
-            "decision":
-
-                ContextBuilder.decision_summary(
-                    analysis
-                )
-
-        }
+        context = {}
 
         if intent == "statistics":
 
@@ -219,36 +258,13 @@ class ContextBuilder:
 
             )
 
-            context["comparison"] = (
-
-                ContextBuilder.comparison_context(
-                    analysis
-                )
-
-            )
-
-            context["kpis"] = (
-
-                ContextBuilder.kpi_context(
-                    analysis
-                )
-
-            )
-
         elif intent == "comparison":
 
             context["comparison"] = (
 
                 ContextBuilder.comparison_context(
-                    analysis
-                )
-
-            )
-
-            context["kpis"] = (
-
-                ContextBuilder.kpi_context(
-                    analysis
+                    analysis,
+                    route["dimension"]
                 )
 
             )
@@ -282,56 +298,20 @@ class ContextBuilder:
                 )
 
             )
+        
+        elif intent == "summary":
+
+            context["summary"] = (
+
+                ContextBuilder.summary_context(
+                    analysis
+                )
+
+            )
 
         else:
 
-            context["statistics"] = (
-
-                ContextBuilder.statistics_context(
-                    analysis
-                )
-
-            )
-
-            context["trends"] = (
-
-                ContextBuilder.trend_context(
-                    analysis
-                )
-
-            )
-
-            context["comparison"] = (
-
-                ContextBuilder.comparison_context(
-                    analysis
-                )
-
-            )
-
-            context["ranking"] = (
-
-                ContextBuilder.ranking_context(
-                    analysis
-                )
-
-            )
-
-            context["kpis"] = (
-
-                ContextBuilder.kpi_context(
-                    analysis
-                )
-
-            )
-
-            context["anomalies"] = (
-
-                ContextBuilder.anomaly_context(
-                    analysis
-                )
-
-            )
+            context["result"] = analysis
 
         return json.dumps(
 

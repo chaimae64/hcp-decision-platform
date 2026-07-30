@@ -1,29 +1,19 @@
 import pandas as pd
 import numpy as np
 
+from services.dataset_profiler import DatasetProfiler
+
 
 class TrendAnalyzer:
 
-    # --------------------------------------------------
-    # Colonnes numériques
-    # --------------------------------------------------
-
-    @staticmethod
-    def numeric_columns(df):
-
-        return list(
-            df.select_dtypes(include="number").columns
-        )
-
-    # --------------------------------------------------
-    # Déterminer le sens de la tendance
-    # --------------------------------------------------
+    # =====================================================
+    # Sens de la tendance
+    # =====================================================
 
     @staticmethod
     def trend_direction(values):
 
         values = np.array(values, dtype=float)
-
         values = values[~np.isnan(values)]
 
         if len(values) < 2:
@@ -35,28 +25,24 @@ class TrendAnalyzer:
         negative = np.sum(differences < 0)
 
         if positive == len(differences):
-
             return "Croissante"
 
         if negative == len(differences):
-
             return "Décroissante"
 
         if np.all(np.abs(differences) < 0.001):
-
             return "Stable"
 
         return "Fluctuante"
 
-    # --------------------------------------------------
-    # Evolution globale (%)
-    # --------------------------------------------------
+    # =====================================================
+    # Evolution globale
+    # =====================================================
 
     @staticmethod
     def evolution_rate(values):
 
         values = np.array(values, dtype=float)
-
         values = values[~np.isnan(values)]
 
         if len(values) < 2:
@@ -68,13 +54,26 @@ class TrendAnalyzer:
         if first == 0:
             return None
 
-        rate = ((last - first) / first) * 100
+        return round(((last - first) / first) * 100, 2)
 
-        return round(rate, 2)
+    # =====================================================
+    # Variation absolue
+    # =====================================================
 
-    # --------------------------------------------------
-    # Evolution annuelle
-    # --------------------------------------------------
+    @staticmethod
+    def absolute_variation(values):
+
+        values = np.array(values, dtype=float)
+        values = values[~np.isnan(values)]
+
+        if len(values) < 2:
+            return None
+
+        return round(values[-1] - values[0], 4)
+
+    # =====================================================
+    # Variations successives
+    # =====================================================
 
     @staticmethod
     def yearly_variation(values):
@@ -94,23 +93,52 @@ class TrendAnalyzer:
 
             else:
 
-                percentage = (
-                    (current - previous)
-                    / previous
-                ) * 100
-
                 variations.append(
                     round(
-                        percentage,
+                        ((current - previous) / previous) * 100,
                         2
                     )
                 )
 
         return variations
 
-    # --------------------------------------------------
-    # Détecter une rupture de tendance
-    # --------------------------------------------------
+    # =====================================================
+    # Volatilité
+    # =====================================================
+
+    @staticmethod
+    def volatility(values):
+
+        values = np.array(values, dtype=float)
+        values = values[~np.isnan(values)]
+
+        if len(values) < 2:
+            return 0
+
+        return round(np.std(values), 4)
+
+    # =====================================================
+    # Pente
+    # =====================================================
+
+    @staticmethod
+    def slope(values):
+
+        values = np.array(values, dtype=float)
+        values = values[~np.isnan(values)]
+
+        if len(values) < 2:
+            return 0
+
+        x = np.arange(len(values))
+
+        slope, _ = np.polyfit(x, values, 1)
+
+        return round(slope, 4)
+
+    # =====================================================
+    # Rupture
+    # =====================================================
 
     @staticmethod
     def detect_break(values):
@@ -120,88 +148,69 @@ class TrendAnalyzer:
         if len(values) < 4:
             return False
 
-        differences = np.diff(values)
+        diff = np.diff(values)
 
-        std = np.std(differences)
+        std = np.std(diff)
 
         if std == 0:
             return False
 
-        for d in differences:
+        return np.any(np.abs(diff) > (2 * std))
 
-            if abs(d) > (2 * std):
-
-                return True
-
-        return False
-
-    # --------------------------------------------------
-    # Générer une interprétation
-    # --------------------------------------------------
+    # =====================================================
+    # Interprétation
+    # =====================================================
 
     @staticmethod
     def interpretation(direction,
                        evolution,
+                       volatility,
                        rupture):
 
         text = ""
 
         if direction == "Croissante":
 
-            text += (
-                "Une tendance globale à la hausse "
-                "est observée. "
-            )
+            text += "Une tendance à la hausse est observée. "
 
         elif direction == "Décroissante":
 
-            text += (
-                "Une diminution progressive "
-                "est observée. "
-            )
+            text += "Une tendance à la baisse est observée. "
 
         elif direction == "Stable":
 
-            text += (
-                "Les valeurs restent globalement "
-                "stables. "
-            )
+            text += "Les valeurs sont globalement stables. "
 
         else:
 
-            text += (
-                "Les valeurs présentent "
-                "des fluctuations importantes. "
-            )
+            text += "Les valeurs fluctuent de manière importante. "
 
         if evolution is not None:
 
-            text += (
-                f"L'évolution globale est de "
-                f"{evolution}%."
-            )
+            text += f"Evolution globale : {evolution}%. "
+
+        if volatility > 0:
+
+            text += f"Volatilité : {volatility}. "
 
         if rupture:
 
-            text += (
-                " Une rupture importante "
-                "de tendance a été détectée."
-            )
+            text += "Une rupture de tendance a été détectée."
 
         return text
 
-    # --------------------------------------------------
+    # =====================================================
     # Analyse complète
-    # --------------------------------------------------
+    # =====================================================
 
     @staticmethod
-    def analyze(df):
+    def analyze(df: pd.DataFrame):
+
+        profiler = DatasetProfiler(df)
 
         results = {}
 
-        columns = TrendAnalyzer.numeric_columns(df)
-
-        for column in columns:
+        for column in profiler.numeric_columns:
 
             values = (
                 df[column]
@@ -209,36 +218,25 @@ class TrendAnalyzer:
                 .tolist()
             )
 
-            direction = (
-                TrendAnalyzer.trend_direction(
-                    values
-                )
-            )
+            direction = TrendAnalyzer.trend_direction(values)
 
-            evolution = (
-                TrendAnalyzer.evolution_rate(
-                    values
-                )
-            )
+            evolution = TrendAnalyzer.evolution_rate(values)
 
-            yearly = (
-                TrendAnalyzer.yearly_variation(
-                    values
-                )
-            )
+            yearly = TrendAnalyzer.yearly_variation(values)
 
-            rupture = (
-                TrendAnalyzer.detect_break(
-                    values
-                )
-            )
+            absolute = TrendAnalyzer.absolute_variation(values)
 
-            interpretation = (
-                TrendAnalyzer.interpretation(
-                    direction,
-                    evolution,
-                    rupture
-                )
+            volatility = TrendAnalyzer.volatility(values)
+
+            slope = TrendAnalyzer.slope(values)
+
+            rupture = TrendAnalyzer.detect_break(values)
+
+            interpretation = TrendAnalyzer.interpretation(
+                direction,
+                evolution,
+                volatility,
+                rupture
             )
 
             results[column] = {
@@ -247,7 +245,13 @@ class TrendAnalyzer:
 
                 "global_evolution": evolution,
 
+                "absolute_variation": absolute,
+
                 "yearly_variation": yearly,
+
+                "volatility": volatility,
+
+                "slope": slope,
 
                 "trend_break": rupture,
 
@@ -256,4 +260,3 @@ class TrendAnalyzer:
             }
 
         return results
-    

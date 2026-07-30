@@ -51,7 +51,7 @@
 </h2>
 
 <div class="modules-grid">
-
+    {% if current_user.role == "admin" %}
     <a href="{{ url_for('import_data') }}" class="module-card">
 
         <i class="bi bi-upload"></i>
@@ -61,6 +61,7 @@
         <p>Importer des fichiers CSV ou Excel.</p>
 
     </a>
+    {% endif %}
 
     <a href="http://localhost:8088"
        target="_blank"

@@ -5,6 +5,86 @@ from services.decision_engine import DecisionEngine
 
 
 class ReportService:
+    @staticmethod
+    def generate_summary(report, analysis):
+
+        rows = report["rows"]
+        columns = report["columns"]
+
+        score = analysis["decision"]["decision_score"]
+        level = analysis["decision"]["decision_level"]
+
+        recommendations = len(
+            analysis["summary"]["recommendations"]
+        )
+
+        strengths = len(
+            analysis["summary"]["strengths"]
+        )
+
+        summary = (
+            f"Le jeu de données contient {rows} observations "
+            f"réparties sur {columns} variables. "
+            f"L'analyse décisionnelle attribue un score de "
+            f"{score}/100 correspondant au niveau "
+            f"« {level} ». "
+            f"{strengths} point(s) fort(s) et "
+            f"{recommendations} recommandation(s) "
+            f"ont été identifiés."
+        )
+
+        return summary
+
+    @staticmethod
+    def generate_trend_summary(trends):
+
+        total = len(trends)
+
+        increasing = 0
+        decreasing = 0
+        stable = 0
+        fluctuating = 0
+        breaks = 0
+
+        for trend in trends.values():
+
+            if trend["trend"] == "Croissante":
+                increasing += 1
+
+            elif trend["trend"] == "Décroissante":
+                decreasing += 1
+
+            elif trend["trend"] == "Stable":
+                stable += 1
+
+            else:
+                fluctuating += 1
+
+            if trend["trend_break"]:
+                breaks += 1
+
+        if breaks == 0:
+            break_text = "Aucune rupture de tendance n'a été détectée."
+        else:
+            break_text = (
+                f"{breaks} rupture(s) de tendance ont été détectées."
+            )
+
+        return {
+
+            "total": total,
+
+            "increasing": increasing,
+
+            "decreasing": decreasing,
+
+            "stable": stable,
+
+            "fluctuating": fluctuating,
+
+            "break_text": break_text
+
+        }
 
     @staticmethod
     def generate(import_info):
@@ -43,11 +123,7 @@ class ReportService:
 
             "duplicates": stats["duplicates"],
 
-            "summary": (
-                f"Le dataset '{table}' a été analysé avec succès. "
-                f"Le moteur d'aide à la décision a généré les indicateurs et recommandations."
-            ),
-
+            
             "recommendations": analysis["summary"]["recommendations"],
 
             "insights": analysis["summary"]["strengths"],
@@ -55,6 +131,20 @@ class ReportService:
             "superset_url": None,
             
             "decision": analysis["decision"],
+
+            "kpi_cards": {
+
+                "score": analysis["decision"]["decision_score"],
+
+                "level": analysis["decision"]["decision_level"],
+
+                "priority": analysis["decision"]["priority"],
+
+                "recommendations": len(
+                    analysis["summary"]["recommendations"]
+                )
+
+            },
 
             "statistics": analysis["statistics"],
 
@@ -77,5 +167,12 @@ class ReportService:
             }
 
         }
+        report["summary"] = ReportService.generate_summary(
+            report,
+            analysis
+        )
+        report["trend_summary"] = ReportService.generate_trend_summary(
+            report["trends"]
+        )
 
         return report

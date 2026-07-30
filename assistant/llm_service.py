@@ -106,36 +106,22 @@ class LLMService:
         if not LLMService.server_available():
 
             raise Exception(
-
                 "Le serveur Ollama n'est pas démarré."
-
             )
 
         if not LLMService.model_available():
 
             raise Exception(
-
-                f"Le modèle "
-
-                f"{LLMService.MODEL}"
-
-                f" n'est pas installé."
-
+                f"Le modèle {LLMService.MODEL} n'est pas installé."
             )
 
         payload = {
 
-            "model":
+            "model": LLMService.MODEL,
 
-                LLMService.MODEL,
+            "prompt": prompt,
 
-            "prompt":
-
-                prompt,
-
-            "stream":
-
-                False
+            "stream": False
 
         }
 
@@ -153,7 +139,29 @@ class LLMService:
 
             )
 
+            elapsed = round(
+
+                time.perf_counter() - start,
+
+                2
+
+            )
+
             response.raise_for_status()
+
+            data = response.json()
+
+            return {
+
+                "answer": data.get("response", "").strip(),
+
+                "execution_time": elapsed,
+
+                "model": LLMService.MODEL
+
+            }
+
+        except Exception as error:
 
             elapsed = round(
 
@@ -163,29 +171,9 @@ class LLMService:
 
             )
 
-            data = response.json()
-
-            return {
-
-                "answer":
-
-                    data["response"],
-
-                "execution_time":
-
-                    elapsed,
-
-                "model":
-
-                    LLMService.MODEL
-
-            }
-
-        except Exception as error:
-
             raise Exception(
 
-                f"Ollama : {error}"
+                f"Ollama ({elapsed}s) : {error}"
 
             )
 

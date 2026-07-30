@@ -1,0 +1,384 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion des utilisateurs | HCP Decision Platform{% endblock %}
+
+{% block page_title %}Gestion des utilisateurs{% endblock %}
+
+{% block content %}
+
+<div class="users-page">
+
+    <!-- ================= LEFT ================= -->
+
+    <div class="users-left">
+
+        <div class="users-header">
+
+            <h2>Gestion des utilisateurs</h2>
+
+            <p>
+                Gérez les comptes utilisateurs et leurs rôles au sein de la plateforme.
+            </p>
+
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+
+                {% for message in messages %}
+
+                    <div class="alert alert-info">
+
+                        {{ message }}
+
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+        {% endwith %}
+
+        <button
+            class="users-create-btn"
+            id="show-user-form">
+
+            <i class="bi bi-plus-lg"></i>
+
+            Nouvel utilisateur
+
+        </button>
+
+        <div class="users-table-card">
+
+            <table class="users-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Nom</th>
+
+                        <th>Email</th>
+
+                        <th>Rôle</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% if users %}
+
+                    {% for user in users %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ user[1] }}
+
+                        </td>
+
+                        <td>
+
+                            {{ user[2] if user[2] else "—" }}
+
+                        </td>
+
+                        <td>
+
+                            {% if user[3] == "admin" %}
+
+                                <span class="role-badge role-admin">
+
+                                    Administrateur
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="role-badge role-analyst">
+
+                                    Analyste
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <div class="action-buttons">
+
+                                <a
+                                    href="{{ url_for('users', edit=user[0]) }}"
+                                    class="action-btn edit-btn">
+
+                                    <i class="bi bi-pencil-square"></i>
+
+                                    Modifier
+
+                                </a>
+                                <a
+                                    href="{{ url_for('change_password', user_id=user[0]) }}"
+                                    class="action-btn password-btn">
+
+                                    <i class="bi bi-key"></i>
+
+                                    Changer
+
+                                </a>
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('delete_user', user_id=user[0]) }}"
+                                    style="display:inline;">
+
+                                    <button
+                                        type="submit"
+                                        class="action-btn delete-btn"
+                                        onclick="return confirm('Supprimer cet utilisateur ?')">
+
+                                        <i class="bi bi-trash"></i>
+
+                                        Supprimer
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="4" class="empty-users">
+
+                            Aucun utilisateur trouvé.
+
+                        </td>
+
+                    </tr>
+
+                {% endif %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- ================= RIGHT ================= -->
+
+    <div
+        class="users-right"
+        id="users-form-container"
+        {% if not edit_user %}
+            style="display:none;"
+        {% endif %}>
+
+        <div class="users-form-card">
+
+            <h3>
+
+            {% if edit_user %}
+
+            Modifier un utilisateur
+
+            {% else %}
+
+            Créer un utilisateur
+
+            {% endif %}
+
+            </h3>
+
+            <form method="POST" autocomplete="off">
+
+                <input
+                    type="hidden"
+                    name="user_id"
+                    value="{{ edit_user[0] if edit_user else '' }}">
+
+                <div class="form-group">
+
+                    <label>
+
+                        Nom d'utilisateur
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="username"
+                        autocomplete="off"
+                        class="form-control"
+                        placeholder="Entrez le nom d'utilisateur"
+                        value="{{ edit_user[1] if edit_user else '' }}"
+                        required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+
+                        Email
+
+                    </label>
+
+                    <input
+                        type="email"
+                        name="email"
+                        autocomplete="off"
+                        class="form-control"
+                        placeholder="Entrez l'email"
+                        value="{{ edit_user[2] if edit_user else '' }}"
+                        required>
+
+                </div>
+
+                {% if not edit_user %}
+
+                <div class="form-group">
+
+                    <label>Mot de passe</label>
+
+                    <input
+                        type="password"
+                        name="password"
+                        autocomplete="new-password"
+                        class="form-control"
+                        placeholder="Entrez le mot de passe"
+                        required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Confirmer le mot de passe</label>
+
+                    <input
+                        type="password"
+                        name="confirm_password"
+                        autocomplete="new-password"
+                        class="form-control"
+                        placeholder="Confirmez le mot de passe"
+                        required>
+
+                </div>
+
+                {% endif %}
+
+                <div class="form-group">
+
+                    <label>
+
+                        Rôle
+
+                    </label>
+
+                    <div class="role-radio">
+
+                        <label>
+
+                            <input
+                                type="radio"
+                                name="role"
+                                value="analyst"
+                                {% if edit_user %}
+                                    {% if edit_user[3] == "analyst" %}checked{% endif %}
+                                {% else %}
+                                    checked
+                                {% endif %}>
+
+                            Analyste
+
+                        </label>
+
+                    </div>
+
+                    <div class="role-radio">
+
+                        <label>
+
+                            <input
+                                type="radio"
+                                name="role"
+                                value="admin"
+                                {% if edit_user and edit_user[3] == "admin" %}checked{% endif %}>
+
+                            Administrateur
+
+                        </label>
+
+                    </div>
+
+                </div>
+                <button
+                    type="button"
+                    class="btn-cancel-user"
+                    id="cancel-user">
+
+                    Annuler
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn-create-user">
+
+                    {% if edit_user %}
+                        Mettre à jour
+                    {% else %}
+                        Créer
+                    {% endif %}
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+const showButton = document.getElementById("show-user-form");
+
+const cancelButton = document.getElementById("cancel-user");
+
+const formContainer = document.getElementById("users-form-container");
+
+showButton.addEventListener("click", function(){
+
+    formContainer.style.display = "block";
+
+});
+
+cancelButton.addEventListener("click", function(){
+
+    window.location.href = "/users";
+
+});
+
+</script>
+
+{% endblock %}

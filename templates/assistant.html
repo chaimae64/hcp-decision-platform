@@ -75,9 +75,48 @@ Assistant IA
 
                 <div class="message-content">
 
-                    {{ response }}
+                    {% if response.statistics %}
+
+                    <h4>Statistiques descriptives</h4>
+
+                    {% for year, stats in response.statistics.items() %}
+
+                    <h5>{{ year }}</h5>
+
+                    <table class="table table-bordered table-sm">
+
+                        <tbody>
+
+                        {% for key, value in stats.items() %}
+
+                        <tr>
+
+                            <th>{{ key }}</th>
+
+                            <td>{{ value }}</td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                    {% endfor %}
+
+                    <hr>
+
+                    {% endif %}
+
+                    <div class="analysis">
+
+                        {{ response.analysis }}
+
+                    </div>
 
                 </div>
+                           
 
             </div>
 
@@ -93,7 +132,7 @@ Assistant IA
 
                 <h2>
 
-                    Bonjour 👋
+                    Bonjour 
 
                 </h2>
 
@@ -115,34 +154,7 @@ Assistant IA
 
             <form method="POST">
 
-                <!-- DATASET -->
-
-                <div class="mb-3">
-
-                    <label class="form-label">
-
-                        Dataset
-
-                    </label>
-
-                    <select
-                        name="dataset"
-                        class="form-select"
-                        required>
-
-                        {% for dataset in datasets %}
-
-                        <option value="{{ dataset }}">
-
-                            {{ dataset }}
-
-                        </option>
-
-                        {% endfor %}
-
-                    </select>
-
-                </div>
+                
 
                 <!-- QUESTION -->
 
@@ -186,45 +198,7 @@ Assistant IA
 
     </div>
 
-    <!-- ================= SUGGESTIONS ================= -->
-
-    <div class="card mt-4">
-
-        <h3 class="card-title">
-
-            Suggestions
-
-        </h3>
-
-        <div class="suggestions">
-
-            <button class="btn btn-light">
-
-                Taux de chômage par région
-
-            </button>
-
-            <button class="btn btn-light">
-
-                Comparaison Homme / Femme
-
-            </button>
-
-            <button class="btn btn-light">
-
-                Région la plus touchée
-
-            </button>
-
-            <button class="btn btn-light">
-
-                Évolution entre 2020 et 2025
-
-            </button>
-
-        </div>
-
-    </div>
+    
 
 </div>
 

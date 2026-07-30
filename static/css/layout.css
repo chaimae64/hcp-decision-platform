@@ -80,6 +80,7 @@ body{
     object-fit:contain;
     transform:scale(0.85);   /* Dézoome */
 }
+
 .logo-text h5{
 
     margin:0;

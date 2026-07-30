@@ -5,6 +5,8 @@ from services.ranking_analyzer import RankingAnalyzer
 from services.comparison_analyzer import ComparisonAnalyzer
 from services.anomaly_detector import AnomalyDetector
 from services.kpi_generator import KPIGenerator
+from assistant.interpreters.comparison_interpreter import ComparisonInterpreter
+
 
 
 class DecisionEngine:
@@ -53,17 +55,25 @@ class DecisionEngine:
     @staticmethod
     def compute_statistics_score(analysis):
 
-        statistics = analysis["statistics"]
+        descriptive = analysis["statistics"]["descriptive_statistics"]
+
+        if not descriptive:
+            return 0
 
         score = 100
 
-        if len(statistics) == 0:
+        for column, stats in descriptive.items():
 
-            return 0
+            if stats.get("count", 0) == 0:
+                score -= 20
 
-        return score
-    
+            if stats.get("std", 0) == 0:
+                score -= 10
 
+            if stats.get("variance", 0) == 0:
+                score -= 10
+
+        return max(score, 0)
     # =====================================================
     # Score Trends
     # =====================================================
@@ -128,17 +138,32 @@ class DecisionEngine:
     # =====================================================
     # Score KPI
     # =====================================================
-
     @staticmethod
     def compute_kpi_score(analysis):
 
         kpis = analysis["kpis"]
 
-        if len(kpis) == 0:
-
+        if not kpis:
             return 0
 
-        return 90
+        score = 100
+
+        business = kpis["business"]
+
+        if business["overall_average"] is None:
+            score -= 20
+
+        if business["best_indicator"] is None:
+            score -= 20
+
+        if business["worst_indicator"] is None:
+            score -= 20
+
+        decision = kpis["decision"]
+
+        score = min(score, decision["decision_score"])
+
+        return max(score, 0)
     
     # =====================================================
     # Score Comparisons
@@ -573,7 +598,28 @@ class DecisionEngine:
 
 }
 
+    @staticmethod
+    def analyze_by_intent(df, intent):
+        if intent == "summary":
+            return DecisionEngine.analyze(df)
+        
 
+        analyzers = {
+
+            "statistics": Statistics.analyze,
+            "trend": TrendAnalyzer.analyze,
+            "ranking": RankingAnalyzer.analyze,
+            "comparison": ComparisonAnalyzer.analyze,
+            "anomaly": AnomalyDetector.analyze,
+            "kpi": KPIGenerator.analyze
+
+        }
+
+        if intent not in analyzers:
+
+            return {}
+
+        return analyzers[intent](df)
     # =====================================================
     # Analyse décisionnelle complète
     # =====================================================

@@ -9,65 +9,49 @@
 }
 
 /* ==========================================================
-   HERO
+   HEADER RAPPORT
 ========================================================== */
 
-.report-hero{
-    background:linear-gradient(135deg,#2563eb,#1d4ed8);
-    border-radius:20px;
-    padding:2.5rem;
-    color:#fff;
-    position:relative;
-    overflow:hidden;
-}
+.report-header{
 
-.report-hero::before{
-    content:"";
-    position:absolute;
-    width:220px;
-    height:220px;
-    background:rgba(255,255,255,.08);
-    border-radius:50%;
-    top:-70px;
-    right:-70px;
-}
+    background:#ffffff;
 
-.report-hero::after{
-    content:"";
-    position:absolute;
-    width:150px;
-    height:150px;
-    background:rgba(255,255,255,.06);
-    border-radius:50%;
-    left:-40px;
-    bottom:-40px;
-}
+    border:1px solid #e5e7eb;
 
-.report-hero-content{
-    position:relative;
-    z-index:2;
-}
+    border-radius:18px;
 
-.report-hero .badge{
-    display:inline-block;
-    padding:.45rem 1rem;
-    border-radius:999px;
-    background:rgba(255,255,255,.18);
-    color:#fff;
-    font-weight:600;
-    margin-bottom:1rem;
+    padding:35px 40px;
+
+    margin-bottom:30px;
+
+    box-shadow:0 4px 15px rgba(0,0,0,.05);
+
 }
 
 .page-title{
+
+    margin:0;
+
     font-size:2rem;
+
     font-weight:700;
-    margin-bottom:.8rem;
+
+    color:#1e293b;
+
 }
 
-.page-subtitle{
-    max-width:760px;
-    line-height:1.8;
-    color:rgba(255,255,255,.92);
+.page-description{
+
+    margin-top:10px;
+
+    max-width:650px;
+
+    font-size:1rem;
+
+    color:#64748b;
+
+    line-height:1.6;
+
 }
 
 /* ==========================================================
@@ -427,11 +411,13 @@
 
 .table thead th{
 
-    color:#fff;
+    background:#f8fafc;
 
-    border:none;
+    color:#1e293b;
 
-    padding:1rem;
+    font-weight:600;
+
+    border-bottom:2px solid #e2e8f0;
 
 }
 
@@ -903,6 +889,61 @@ iframe{
     box-shadow:0 15px 35px rgba(0,0,0,.12);
 
 }
+
+/* ===========================
+   KPI COLORS
+=========================== */
+
+.kpi-value.success{
+
+    color:#16a34a;
+
+}
+
+.kpi-value.primary{
+
+    color:#2563eb;
+
+}
+
+.kpi-value.warning{
+
+    color:#d97706;
+
+}
+
+.kpi-value.danger{
+
+    color:#dc2626;
+
+}
+
+.kpi-value.score{
+
+    color:#0f172a;
+
+    font-size:2rem;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* ==========================================================
    END REPORT.CSS

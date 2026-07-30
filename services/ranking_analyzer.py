@@ -1,219 +1,173 @@
 import pandas as pd
 
+from services.dataset_profiler import DatasetProfiler
+
 
 class RankingAnalyzer:
 
-    # --------------------------------------------------
-    # Colonnes numériques
-    # --------------------------------------------------
+    # =====================================================
+    # Classement
+    # =====================================================
 
     @staticmethod
-    def numeric_columns(df):
+    def rank_dimension(df, dimension, indicator):
 
-        return list(
-            df.select_dtypes(include="number").columns
-        )
+        return (
 
-    # --------------------------------------------------
-    # Colonnes textuelles
-    # --------------------------------------------------
-
-    @staticmethod
-    def text_columns(df):
-
-        return list(
-            df.select_dtypes(exclude="number").columns
-        )
-
-    # --------------------------------------------------
-    # Classement d'une dimension
-    # --------------------------------------------------
-
-    @staticmethod
-    def rank_dimension(
-        df,
-        dimension,
-        indicator
-    ):
-        """
-        Classe une dimension selon la moyenne
-        d'un indicateur.
-        """
-
-        ranking = (
             df
+
             .groupby(dimension)[indicator]
+
             .mean()
+
             .sort_values(ascending=False)
+
         )
 
-        return ranking
-
-    # --------------------------------------------------
-    # Top N
-    # --------------------------------------------------
-
-    @staticmethod
-    def top(
-        df,
-        dimension,
-        indicator,
-        n=5
-    ):
-
-        ranking = RankingAnalyzer.rank_dimension(
-            df,
-            dimension,
-            indicator
-        )
-
-        return (
-            ranking
-            .head(n)
-            .round(2)
-            .to_dict()
-        )
-
-    # --------------------------------------------------
-    # Bottom N
-    # --------------------------------------------------
-
-    @staticmethod
-    def bottom(
-        df,
-        dimension,
-        indicator,
-        n=5
-    ):
-
-        ranking = RankingAnalyzer.rank_dimension(
-            df,
-            dimension,
-            indicator
-        )
-
-        return (
-            ranking
-            .tail(n)
-            .round(2)
-            .to_dict()
-        )
-
-    # --------------------------------------------------
+    # =====================================================
     # Leader
-    # --------------------------------------------------
+    # =====================================================
 
     @staticmethod
-    def leader(
-        df,
-        dimension,
-        indicator
-    ):
-
-        ranking = RankingAnalyzer.rank_dimension(
-            df,
-            dimension,
-            indicator
-        )
+    def leader(ranking):
 
         return {
 
             "name": ranking.index[0],
 
-            "value": round(
-                ranking.iloc[0],
-                2
-            )
+            "value": round(ranking.iloc[0], 2)
 
         }
 
-    # --------------------------------------------------
+    # =====================================================
     # Dernier
-    # --------------------------------------------------
+    # =====================================================
 
     @staticmethod
-    def last(
-        df,
-        dimension,
-        indicator
-    ):
-
-        ranking = RankingAnalyzer.rank_dimension(
-            df,
-            dimension,
-            indicator
-        )
+    def last(ranking):
 
         return {
 
             "name": ranking.index[-1],
 
-            "value": round(
-                ranking.iloc[-1],
-                2
-            )
+            "value": round(ranking.iloc[-1], 2)
 
         }
 
-    # --------------------------------------------------
-    # Analyse complète
-    # --------------------------------------------------
+    # =====================================================
+    # Top N
+    # =====================================================
 
     @staticmethod
-    def analyze(df):
+    def top(ranking, n=5):
+
+        return (
+
+            ranking
+
+            .head(n)
+
+            .round(2)
+
+            .to_dict()
+
+        )
+
+    # =====================================================
+    # Bottom N
+    # =====================================================
+
+    @staticmethod
+    def bottom(ranking, n=5):
+
+        return (
+
+            ranking
+
+            .tail(n)
+
+            .round(2)
+
+            .to_dict()
+
+        )
+
+    # =====================================================
+    # Analyse complète
+    # =====================================================
+
+    @staticmethod
+    def analyze(df: pd.DataFrame):
+
+        profiler = DatasetProfiler(df)
 
         results = {}
 
-        dimensions = RankingAnalyzer.text_columns(df)
-
-        indicators = RankingAnalyzer.numeric_columns(df)
-
-        for dimension in dimensions:
+        for dimension in profiler.categorical_columns:
 
             results[dimension] = {}
 
-            for indicator in indicators:
+            for indicator in profiler.numeric_columns:
 
                 try:
+
+                    ranking = RankingAnalyzer.rank_dimension(
+
+                        df,
+
+                        dimension,
+
+                        indicator
+
+                    )
 
                     results[dimension][indicator] = {
 
                         "leader":
 
                             RankingAnalyzer.leader(
-                                df,
-                                dimension,
-                                indicator
+
+                                ranking
+
                             ),
 
                         "last":
 
                             RankingAnalyzer.last(
-                                df,
-                                dimension,
-                                indicator
+
+                                ranking
+
                             ),
 
                         "top5":
 
                             RankingAnalyzer.top(
-                                df,
-                                dimension,
-                                indicator
+
+                                ranking
+
                             ),
 
                         "bottom5":
 
                             RankingAnalyzer.bottom(
-                                df,
-                                dimension,
-                                indicator
-                            )
+
+                                ranking
+
+                            ),
+
+                        "categories_count":
+
+                            len(ranking),
+
+                        "ranking":
+
+                            ranking.round(2).to_dict()
 
                     }
 
                 except Exception:
 
-                    pass
+                    continue
 
         return results
+    

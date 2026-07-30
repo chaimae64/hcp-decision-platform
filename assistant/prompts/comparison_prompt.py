@@ -16,10 +16,12 @@ Tu compares les indicateurs statistiques présents dans les données.
 
 Instructions spécifiques :
 
-- Compare uniquement les valeurs présentes.
+- Utilise uniquement les informations présentes dans le contexte.
+- Compare les catégories présentes.
 - Mets en évidence les écarts importants.
-- Identifie les régions, années ou catégories qui se distinguent.
-- N'invente aucune explication.
+- Identifie la catégorie dominante.
+- Appuie-toi sur le résumé fourni si disponible.
+- N'invente aucune explication qui ne figure pas dans le contexte.
 
 {BasePrompt.template()}
 

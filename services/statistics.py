@@ -1,126 +1,10 @@
 import pandas as pd
 
+from services.dataset_profiler import DatasetProfiler
+
 
 class Statistics:
 
-    @staticmethod
-    def numeric_columns(df: pd.DataFrame) -> list:
-        """
-        Retourne les colonnes numériques.
-        """
-
-        return list(
-            df.select_dtypes(include="number").columns
-        )
-
-    @staticmethod
-    def text_columns(df: pd.DataFrame) -> list:
-        """
-        Retourne les colonnes textuelles.
-        """
-
-        return list(
-            df.select_dtypes(exclude="number").columns
-        )
-
-    @staticmethod
-    def global_information(df: pd.DataFrame) -> dict:
-        """
-        Informations générales sur le dataset.
-        """
-
-        return {
-
-            "rows": len(df),
-
-            "columns": len(df.columns),
-
-            "numeric_columns": len(
-                Statistics.numeric_columns(df)
-            ),
-
-            "text_columns": len(
-                Statistics.text_columns(df)
-            ),
-
-            "missing_values": int(
-                df.isna().sum().sum()
-            ),
-
-            "duplicates": int(
-                df.duplicated().sum()
-            )
-
-        }
-
-    @staticmethod
-    def descriptive_statistics(df: pd.DataFrame) -> dict:
-        """
-        Calcule les statistiques descriptives.
-        """
-
-        results = {}
-
-        for column in Statistics.numeric_columns(df):
-
-            results[column] = {
-
-                "count": int(df[column].count()),
-
-                "mean": round(df[column].mean(), 2),
-
-                "median": round(df[column].median(), 2),
-
-                "min": round(df[column].min(), 2),
-
-                "max": round(df[column].max(), 2),
-
-                "std": round(df[column].std(), 2),
-
-                "variance": round(df[column].var(), 2),
-
-                "sum": round(df[column].sum(), 2)
-
-            }
-
-        return results
-
-    @staticmethod
-    def distributions(df: pd.DataFrame) -> dict:
-        """
-        Distribution des colonnes textuelles.
-        """
-
-        result = {}
-
-        for column in Statistics.text_columns(df):
-
-            result[column] = (
-                df[column]
-                .value_counts(dropna=False)
-                .to_dict()
-            )
-
-        return result
-
-    @staticmethod
-    def detect_dimensions(df: pd.DataFrame) -> list:
-        """
-        Les dimensions correspondent
-        aux colonnes textuelles.
-        """
-
-        return Statistics.text_columns(df)
-
-    @staticmethod
-    def detect_indicators(df: pd.DataFrame) -> list:
-        """
-        Les indicateurs correspondent
-        aux colonnes numériques.
-        """
-
-        return Statistics.numeric_columns(df)
-    
     # =====================================================
     # Analyse complète
     # =====================================================
@@ -128,29 +12,77 @@ class Statistics:
     @staticmethod
     def analyze(df: pd.DataFrame) -> dict:
         """
-        Lance l'ensemble des analyses statistiques.
+        Analyse statistique basée sur DatasetProfiler.
         """
+
+        profiler = DatasetProfiler(df)
+
+        profile = profiler.profile()
 
         return {
 
             "general_information":
 
-                Statistics.global_information(df),
+                profile["general"],
 
             "descriptive_statistics":
 
-                Statistics.descriptive_statistics(df),
+                profile["numeric_statistics"],
 
             "distributions":
 
-                Statistics.distributions(df),
+                profile["categorical_statistics"],
 
             "dimensions":
 
-                Statistics.detect_dimensions(df),
+                profile["groups"]["categorical"],
 
             "indicators":
 
-                Statistics.detect_indicators(df)
+                profile["groups"]["numeric"],
+
+            "column_information":
+
+                profile["columns"],
+
+            "missing_values":
+
+                profile["missing_values"],
+
+            "duplicates":
+
+                profile["duplicates"],
+
+            "constant_columns":
+
+                profile["constant_columns"],
+
+            "high_missing_columns":
+
+                profile["high_missing_columns"],
+
+            "high_cardinality_columns":
+
+                profile["high_cardinality_columns"],
+
+            "correlations":
+
+                profile["correlations"],
+
+            "strong_correlations":
+
+                profile["strong_correlations"],
+
+            "data_quality":
+
+                profile["data_quality"],
+
+            "business_profile":
+
+                profile["profile"],
+
+            "recommendations":
+
+                profile["recommendations"]
 
         }

@@ -1,21 +1,9 @@
 import numpy as np
 import pandas as pd
-
+from services.dataset_profiler import DatasetProfiler
 
 class AnomalyDetector:
 
-    # =====================================================
-    # Colonnes numériques
-    # =====================================================
-
-    @staticmethod
-    def numeric_columns(df):
-
-        return list(
-            df.select_dtypes(
-                include="number"
-            ).columns
-        )
 
     # =====================================================
     # Outliers avec IQR
@@ -26,7 +14,9 @@ class AnomalyDetector:
 
         results = {}
 
-        for column in AnomalyDetector.numeric_columns(df):
+        profiler = DatasetProfiler(df)
+
+        for column in profiler.numeric_columns:
 
             serie = df[column].dropna()
 
@@ -71,8 +61,9 @@ class AnomalyDetector:
     def detect_zscore(df):
 
         results = {}
+        profiler = DatasetProfiler(df)
 
-        for column in AnomalyDetector.numeric_columns(df):
+        for column in profiler.numeric_columns:
 
             serie = df[column].dropna()
 
@@ -118,8 +109,9 @@ class AnomalyDetector:
     def negative_values(df):
 
         results = {}
+        profiler = DatasetProfiler(df)
 
-        for column in AnomalyDetector.numeric_columns(df):
+        for column in profiler.numeric_columns:
 
             negatives = df[
                 df[column] < 0
@@ -143,8 +135,9 @@ class AnomalyDetector:
     def greater_than_100(df):
 
         results = {}
+        profiler = DatasetProfiler(df)
 
-        for column in AnomalyDetector.numeric_columns(df):
+        for column in profiler.numeric_columns:
 
             values = df[
                 df[column] > 100
@@ -671,7 +664,10 @@ class AnomalyDetector:
         # -----------------------------
         # Détection des anomalies
         # -----------------------------
+        profiler = DatasetProfiler(df)
 
+        profile = profiler.profile()
+        
         iqr = AnomalyDetector.detect_iqr(df)
 
         zscore = AnomalyDetector.detect_zscore(df)
@@ -763,17 +759,7 @@ class AnomalyDetector:
 
             },
 
-            "statistics": {
-
-                "rows": len(df),
-
-                "columns": len(df.columns),
-
-                "numeric_columns": len(
-                    AnomalyDetector.numeric_columns(df)
-                )
-
-            },
+            "statistics": profile["general"],
 
             "outliers": {
 

@@ -1,29 +1,8 @@
 import pandas as pd
+from services.dataset_profiler import DatasetProfiler
 
 
 class KPIGenerator:
-
-    # =====================================================
-    # Colonnes numériques
-    # =====================================================
-
-    @staticmethod
-    def numeric_columns(df):
-
-        return list(
-            df.select_dtypes(include="number").columns
-        )
-
-    # =====================================================
-    # Colonnes textuelles
-    # =====================================================
-
-    @staticmethod
-    def text_columns(df):
-
-        return list(
-            df.select_dtypes(exclude="number").columns
-        )
 
     # =====================================================
     # KPI d'une colonne numérique
@@ -69,8 +48,8 @@ class KPIGenerator:
     def global_statistics(df):
 
         results = {}
-
-        for column in KPIGenerator.numeric_columns(df):
+        profiler = DatasetProfiler(df)
+        for column in profiler.numeric_columns:
 
             results[column] = KPIGenerator.statistics(
                 df[column]
@@ -103,8 +82,10 @@ class KPIGenerator:
     @staticmethod
     def total_indicators(df):
 
+        profiler = DatasetProfiler(df)
+
         return len(
-            KPIGenerator.numeric_columns(df)
+            profiler.numeric_columns
         )
 
     # =====================================================
@@ -114,8 +95,10 @@ class KPIGenerator:
     @staticmethod
     def total_dimensions(df):
 
+        profiler = DatasetProfiler(df)
+
         return len(
-            KPIGenerator.text_columns(df)
+            profiler.categorical_columns
         )
 
     # =====================================================
@@ -147,7 +130,9 @@ class KPIGenerator:
     @staticmethod
     def best_indicator(df):
 
-        indicators = KPIGenerator.numeric_columns(df)
+        profiler = DatasetProfiler(df)
+
+        indicators = profiler.numeric_columns
 
         if not indicators:
             return None
@@ -174,7 +159,9 @@ class KPIGenerator:
     @staticmethod
     def worst_indicator(df):
 
-        indicators = KPIGenerator.numeric_columns(df)
+        profiler = DatasetProfiler(df)
+
+        indicators = profiler.numeric_columns
 
         if not indicators:
             return None
@@ -255,7 +242,9 @@ class KPIGenerator:
     @staticmethod
     def overall_average(df):
 
-        indicators = KPIGenerator.numeric_columns(df)
+        profiler = DatasetProfiler(df)
+
+        indicators = profiler.numeric_columns
 
         if len(indicators) == 0:
             return None
@@ -291,7 +280,9 @@ class KPIGenerator:
     @staticmethod
     def global_maximum(df):
 
-        indicators = KPIGenerator.numeric_columns(df)
+        profiler = DatasetProfiler(df)
+
+        indicators = profiler.numeric_columns
 
         maximum = None
 
@@ -322,7 +313,9 @@ class KPIGenerator:
     @staticmethod
     def global_minimum(df):
 
-        indicators = KPIGenerator.numeric_columns(df)
+        profiler = DatasetProfiler(df)
+
+        indicators = profiler.numeric_columns
 
         minimum = None
 
@@ -377,9 +370,11 @@ class KPIGenerator:
 
         }
 
-        dimensions = KPIGenerator.text_columns(df)
+        profiler = DatasetProfiler(df)
 
-        indicators = KPIGenerator.numeric_columns(df)
+        dimensions = profiler.categorical_columns
+
+        indicators = profiler.numeric_columns
 
         result["categories"] = {}
 
@@ -432,7 +427,9 @@ class KPIGenerator:
     @staticmethod
     def global_evolution(df):
 
-        indicators = KPIGenerator.numeric_columns(df)
+        profiler = DatasetProfiler(df)
+
+        indicators = profiler.numeric_columns
 
         evolution = {}
 
@@ -469,7 +466,9 @@ class KPIGenerator:
     @staticmethod
     def global_trend(df):
 
-        indicators = KPIGenerator.numeric_columns(df)
+        profiler = DatasetProfiler(df)
+
+        indicators = profiler.numeric_columns
 
         means = []
 
@@ -665,6 +664,9 @@ class KPIGenerator:
         ------
         dict
         """
+        profiler = DatasetProfiler(df)
+
+        profile = profiler.profile()
 
         return {
 
@@ -672,7 +674,7 @@ class KPIGenerator:
             # Informations générales
             # ------------------------------------------
 
-            "dataset": KPIGenerator.dataset_summary(df),
+            "dataset": profile["general"],
 
             # ------------------------------------------
             # Statistiques descriptives
