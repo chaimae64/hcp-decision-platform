@@ -130,7 +130,7 @@ Rapports d'analyse
             </a>
 
             <a
-                href="{{ url_for('view_report') }}"
+                href="{{ url_for('latest_report') }}"
                 class="btn btn-outline-primary">
 
                 <i class="bi bi-eye-fill"></i>
@@ -171,7 +171,7 @@ Rapports d'analyse
 
                     <th>Utilisateur</th>
 
-                    <th>Action</th>
+                    <th>Actions</th>
 
                 </tr>
 
@@ -192,10 +192,23 @@ Rapports d'analyse
                     <td>
 
                         <a
-                            href="{{ url_for('view_report') }}"
-                            class="btn btn-sm btn-primary">
+                            href="{{ url_for('view_report', file=item.file) }}"
+                            class="text-primary text-decoration-none me-3">
+
+                            <i class="bi bi-eye-fill"></i>
 
                             Ouvrir
+
+                        </a>
+
+                        <a
+                            href="{{ url_for('delete_report', file=item.file) }}"
+                            class="text-danger text-decoration-none"
+                            onclick="return confirm('Voulez-vous vraiment supprimer ce rapport ?');">
+
+                            <i class="bi bi-trash-fill"></i>
+
+                            Supprimer
 
                         </a>
 

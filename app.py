@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file
 from flask_login import (
     LoginManager,
     UserMixin,
@@ -11,11 +11,20 @@ import os
 from services.auth_service import AuthService
 from services.importer import Importer
 from services.report_service import ReportService
+from services.pdf_exporter import PDFExporter
+from services.word_exporter import WordExporter
 from assistant.assistant_ai import AssistantAI
 from assistant.dataset_loader import DatasetLoader
 from services.user_service import UserService
 
 app = Flask(__name__)
+# =====================================================
+# Création automatique du dossier des rapports
+# =====================================================
+
+REPORTS_FOLDER = "reports"
+
+os.makedirs(REPORTS_FOLDER, exist_ok=True)
 
 app.secret_key = "hcp_secret"
 login_manager = LoginManager()
@@ -234,12 +243,13 @@ def report():
 
     import_info = session.get("import_info")
 
+    reports = ReportService.load_reports()
+
     return render_template(
         "report.html",
         import_info=import_info,
-        reports=[]
+        reports=reports
     )
-
 
 @app.route("/rapport/generate")
 @login_required
@@ -254,41 +264,144 @@ def generate_report():
         return redirect(url_for("import_data"))
 
     report = ReportService.generate(import_info)
+    reports = ReportService.load_reports()
+
+    session["current_report"] = reports[0]["file"]
 
     session["report_generated"] = True
 
     return render_template(
         "report_view.html",
         report=report,
-        reports=[]
+        reports=ReportService.load_reports()
     )
 
 
-@app.route("/rapport/view")
+@app.route("/rapport/view/<file>")
 @login_required
-def view_report():
+def view_report(file):
 
-    import_info = session.get("import_info")
+    report = ReportService.open_report(file)
 
-    if import_info is None:
+    if report is None:
 
-        flash("Veuillez d'abord importer un dataset.")
-
-        return redirect(url_for("import_data"))
-
-    if not session.get("report_generated"):
-
-        flash("Aucun rapport n'a encore été généré.")
+        flash("Rapport introuvable.")
 
         return redirect(url_for("report"))
 
-    report = ReportService.generate(import_info)
+    session["current_report"] = file
 
     return render_template(
         "report_view.html",
         report=report,
-        reports=[]
+        reports=ReportService.load_reports()
     )
+
+
+@app.route("/rapport/latest")
+@login_required
+def latest_report():
+
+    reports = ReportService.load_reports()
+
+    if not reports:
+
+        flash("Aucun rapport généré.")
+
+        return redirect(url_for("report"))
+
+    latest = reports[0]
+
+    return redirect(
+        url_for(
+            "view_report",
+            file=latest["file"]
+        )
+    )
+
+@app.route("/rapport/delete/<file>")
+@login_required
+def delete_report(file):
+
+    deleted = ReportService.delete_report(file)
+
+    if deleted:
+
+        flash(
+            "Rapport supprimé avec succès.",
+            "success"
+        )
+
+    else:
+
+        flash(
+            "Rapport introuvable.",
+            "danger"
+        )
+
+    return redirect(url_for("report"))
+
+
+
+@app.route("/rapport/export/pdf")
+@login_required
+def export_pdf():
+
+    filename = session.get("current_report")
+
+    if filename is None:
+
+        flash("Aucun rapport ouvert.")
+
+        return redirect(url_for("report"))
+
+    report = ReportService.open_report(filename)
+
+    pdf = PDFExporter.export(report)
+
+    from io import BytesIO
+
+    return send_file(
+
+        BytesIO(pdf),
+
+        mimetype="application/pdf",
+
+        as_attachment=True,
+
+        download_name="rapport_hcp.pdf"
+
+    )
+
+
+@app.route("/rapport/export/word")
+@login_required
+def export_word():
+
+    filename = session.get("current_report")
+
+    if filename is None:
+
+        flash("Aucun rapport ouvert.")
+
+        return redirect(url_for("report"))
+
+    report = ReportService.open_report(filename)
+
+    word = WordExporter.export(report)
+
+    return send_file(
+
+        word,
+
+        as_attachment=True,
+
+        download_name="rapport_hcp.docx",
+
+        mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+
+    )
+
 
 # =====================================================
 # Gestion des utilisateurs
